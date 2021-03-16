@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-
+import React, { useState, useEffect } from 'react'
+import {useStateValue} from './StateProvider'
 import './App.css';
 import Chat from './Chat';
 import Sidebar from './Sidebar';
@@ -9,15 +9,31 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import Login from './Login';
+import axios from 'axios'
+import firebase from "firebase"
+import { actionTypes } from './reducer'
 
 function App() {
-  const [user, setUser] = useState(null)
+  const [{user}, dispatch] = useStateValue()
   
+useEffect(() => {
+    firebase.auth().onAuthStateChanged(user =>{
+      if(user){
+        dispatch({
+          type: actionTypes.SET_USER,
+          user: user,
+          
+      })
+      }
+    })
+}, [])
+
   return (
     <div className="app">
     
         {!user? (
-          <h1>LOG IN</h1>
+          <Login/>
         ) : (
           <div className="app_body">
               <Router>
