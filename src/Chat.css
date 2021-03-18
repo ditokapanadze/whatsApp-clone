@@ -38,7 +38,7 @@
     background-repeat: repeat;
     background-position: center;
     padding: 30px;
-    overflow: scroll;
+    overflow: auto;
 
 }
 
@@ -96,4 +96,17 @@
 .chat_footer .MuiSvgIcon-root{
     padding: 10px;
     color: grey;
+}
+
+.dlt-btn{
+    position: absolute;
+    left: -120px;
+    display: none;
+
+}
+
+
+
+.test:hover  .dlt-btn{
+    display: inline-block;
 }

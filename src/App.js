@@ -12,19 +12,19 @@ import {
 import Login from './Login';
 import axios from 'axios'
 import firebase from "firebase"
+import {auth} from './firebase'
 import { actionTypes } from './reducer'
 
 function App() {
   const [{user}, dispatch] = useStateValue()
   
 useEffect(() => {
-    firebase.auth().onAuthStateChanged(user =>{
+    auth.onAuthStateChanged(user =>{
       if(user){
         dispatch({
           type: actionTypes.SET_USER,
           user: user,
-          
-      })
+        })
       }
     })
 }, [])

@@ -3,6 +3,7 @@
     padding: 20px;
     cursor: pointer;
     border-bottom:  1px solid #f6f6f6;
+    
 }
 
 .sidebarChat:hover{
@@ -23,3 +24,8 @@ a{
     color: black;
 }
 
+.room-dtl-btn:hover{
+     background-color: red;
+     cursor: pointer;
+     transform: scale(1.1) ;
+}
