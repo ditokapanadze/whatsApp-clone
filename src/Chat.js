@@ -10,6 +10,7 @@ import firebase from"firebase"
 import userEvent from '@testing-library/user-event'
 import { useStateValue } from './StateProvider'
 import ReactDOM from 'react-dom';
+import Picker from 'emoji-picker-react';
 
 function Chat() {
     const [seed, setSeed] = useState("")
@@ -17,7 +18,16 @@ function Chat() {
     const [roomName, setroomName] = useState ("")
     const {roomId}= useParams()
     const [messages, setMessages] = useState ([])
+    const [emojiVisible, setEmojiVisible] = useState("")
     const [{user}, dispatch] = useStateValue([]) 
+
+    const [chosenEmoji, setChosenEmoji] = useState(null);
+
+    const onEmojiClick = (event, emojiObject) => {
+      setChosenEmoji(emojiObject);
+      setInput(input + chosenEmoji?.emoji)
+    };
+  
 
     useEffect(() =>{
         setSeed(Math.floor(Math.random()*500))
@@ -77,6 +87,19 @@ function Chat() {
     
       useEffect(scrollToBottom, [messages]);
 
+      const emojiClick = () =>{
+          
+       if(emojiVisible === ""){
+        setEmojiVisible('visible')
+        console.log(emojiVisible)
+          
+       } else {
+        
+        setEmojiVisible('')
+        console.log(emojiVisible)
+       }
+    }
+
     return (
         <div  className="chat">
             <div className="chat_header">
@@ -122,7 +145,15 @@ function Chat() {
                 
             </div>
             <div className="chat_footer">
-                <InsertEmoticonIcon />
+                <InsertEmoticonIcon onClick={emojiClick} />
+                <div className={`emoji-container ${emojiVisible}`}>
+      {chosenEmoji ? (
+        <span>You chose: {chosenEmoji.emoji}</span>
+      ) : (
+        <span>No emoji Chosen</span>
+      )}
+      <Picker onEmojiClick={onEmojiClick} />
+    </div>
                  <form >
                      <input type="text" 
                             required

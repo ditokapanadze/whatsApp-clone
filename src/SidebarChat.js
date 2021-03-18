@@ -40,9 +40,15 @@ function SidebarChat({id, name, author, addNewChat}) {
 
      
     const deleteRoom = (id) =>{
-            console.log(id)
+        let answer = window.confirm("are you sure? All the messages in this room will be permanently deleted");
+           if(answer){
+                console.log(id)
             db.collection('rooms')
             .doc(id).delete()
+        } else {
+            return 
+        }
+          
     }
 
      console.log(messages[0]?.message)

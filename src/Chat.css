@@ -74,6 +74,7 @@
     align-items: center;
     height: 62px;
     border-top: 1px solid lightgray;
+    position: relative;
 }
 .chat_footer form{
     flex: 1;
@@ -96,7 +97,11 @@
 .chat_footer .MuiSvgIcon-root{
     padding: 10px;
     color: grey;
+    cursor: pointer;
+
 }
+
+
 
 .dlt-btn{
     position: absolute;
@@ -109,4 +114,14 @@
 
 .test:hover  .dlt-btn{
     display: inline-block;
+}
+
+.emoji-container{
+    position: absolute;
+    top: -350px;
+    display: none;
+}
+
+.visible{
+  display: inline-block;
 }

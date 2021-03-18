@@ -14,9 +14,13 @@ import axios from 'axios'
 import firebase from "firebase"
 import {auth} from './firebase'
 import { actionTypes } from './reducer'
+import Picker from 'emoji-picker-react';
+
 
 function App() {
   const [{user}, dispatch] = useStateValue()
+
+
   
 useEffect(() => {
     auth.onAuthStateChanged(user =>{
@@ -50,7 +54,7 @@ useEffect(() => {
       
        </div>
         )}
-      
+   
     </div>
   );
 }
