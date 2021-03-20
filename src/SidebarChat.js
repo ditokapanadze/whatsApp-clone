@@ -63,7 +63,7 @@ function SidebarChat({id, name, author, addNewChat}) {
                                         <button className="room-dtl-btn" onClick={()=>deleteRoom(id)}>Delete this room</button>
                                             </div>)}
                 <p>
-                    {messages[0]?.message}
+                    {messages[0]?.message?.slice(0, 30)}
                 </p>
             </div>
         </div>

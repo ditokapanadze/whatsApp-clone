@@ -6,6 +6,7 @@ import MicIcon from "@material-ui/icons/Mic"
 import './Chat.css'
 import {useParams} from "react-router-dom"
 import db from './firebase'
+import {storage} from './firebase'
 import firebase from"firebase"
 import userEvent from '@testing-library/user-event'
 import { useStateValue } from './StateProvider'
@@ -19,6 +20,10 @@ function Chat() {
     const {roomId}= useParams()
     const [messages, setMessages] = useState ([])
     const [emojiVisible, setEmojiVisible] = useState("")
+    const [photo, setPhoto] = useState(null)
+    const [progress, setProgress] = useState(0);
+    const [url, setUrl] = useState("");
+
     const [{user}, dispatch] = useStateValue([]) 
 
     const [chosenEmoji, setChosenEmoji] = useState(null);
@@ -32,7 +37,40 @@ function Chat() {
     useEffect(() =>{
         setSeed(Math.floor(Math.random()*500))
      }, [roomId])
-   
+       
+     const handleChange = (e) =>{
+        if (e.target.files[0]) {
+            setPhoto(e.target.files[0]);
+            
+          }
+     }
+
+     const handleUpload = () => {
+        const uploadTask = firebase.storage().ref(`images/${photo.name}`).put(photo);
+        uploadTask.on(
+          "state_changed",
+          snapshot => {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            setProgress(progress);
+          },
+          error => {
+            console.log(error);
+          },
+          () => {
+            storage
+              .ref("images")
+              .child(photo.name)
+              .getDownloadURL()
+              .then(url => {
+                  setUrl(url);
+              });
+          }
+        );
+      };
+
+
     const sendMessage =(e) =>{
         e.preventDefault()
         console.log(input)
@@ -42,9 +80,13 @@ function Chat() {
         .collection('messages')
         .add({
             message: input,
-            name: user.displayName,
+            name: user.displayName, 
+            photoURL: url,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         })
+        
+        handleUpload()
+        
         setInput("")
     }
 
@@ -62,7 +104,8 @@ function Chat() {
             .onSnapshot(snapshot =>{
                 setMessages(snapshot.docs.map(doc =>({
                     id: doc.id,
-                    data: doc.data()
+                    data: doc.data(),
+                   
                     })))
             })
         }
@@ -100,6 +143,8 @@ function Chat() {
        }
     }
 
+    console.log(url)
+
     return (
         <div  className="chat">
             <div className="chat_header">
@@ -133,8 +178,9 @@ function Chat() {
                             {message.data.name}
                         </span>
                         {message.data.name === user.displayName && <button className="dlt-btn" onClick={() => handleDelete(message.id)}>delete message</button>}
-                        
+                        <img  />
                        {message.data.message}
+                       <img src={message.data.photoURL}/>
                         <span className="chat_timestamp">
                             {new Date(message.data.timestamp?.toDate()).toUTCString()}
                         </span>
@@ -160,12 +206,18 @@ function Chat() {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Type a message" />
+                          <input 
+                                type="file"
+                                onChange={handleChange}
+                                
+                                    />
                      <button 
                             type="submit" 
                             onClick={sendMessage}
                             
                             >Send a message</button>
                  </form>
+                 
                 <MicIcon/>
             </div>
         </div>
