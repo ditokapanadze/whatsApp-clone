@@ -68,7 +68,7 @@ function Chat() {
               .getDownloadURL()
               .then(url => {
                   setUrl(url);
-                  alert(url)
+                  
               });
           }
         );
@@ -78,12 +78,8 @@ function Chat() {
 
      function  sendMessage (e) {
       e.preventDefault()
-       
-       photo && handleUpload()
-        
-       
-       
-        db.collection('rooms')
+      photo && handleUpload()
+       db.collection('rooms')
         .doc(roomId)
         .collection('messages')
         .add({
@@ -92,12 +88,10 @@ function Chat() {
             photoURL: url,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         })
-        
         setPhoto(null)
         setUrl("")
         setInput("")
         setimgPreview('')
-        
       }
 
     useEffect(() => {
@@ -162,8 +156,7 @@ function Chat() {
                     <h3>{roomName}</h3>
                     <p>Last seen at {" "}
                     {new Date(messages[messages.length -1]?.data?.timestamp?.toDate()).toUTCString() }
-                    
-                        </p>
+                     </p>
                 </div>
                 <div className="chat_headerRight">
                 <IconButton>
@@ -181,8 +174,7 @@ function Chat() {
                 {messages.map(message =>(   
                     <div ref={messagesEndRef} className="test">
                     <p key={message.id}
-                       
-                       className={`chat_message ${message.data.name === user.displayName && "chat_reciever"}`}>
+                     className={`chat_message ${message.data.name === user.displayName && "chat_reciever"}`}>
                     <span className="chat_name">
                             {message.data.name}
                         </span>
@@ -196,9 +188,7 @@ function Chat() {
                     </p>
                     </div>
                 ))}
-                
-                
-            </div>
+                </div>
             <div className="chat_footer">
                 <InsertEmoticonIcon onClick={emojiClick} />
                 <div className={`emoji-container ${emojiVisible}`}>
@@ -221,18 +211,15 @@ function Chat() {
                                 accept="image/*"
                                 type="file"
                                 onChange={handleChange}
-                                
-                                    /> 
+                                 /> 
                                   <img width="50" id="file-ip-1-preview" src={imgPreview}/>    
                                 <label for="img"><PhotoCameraIcon /></label>
                      <button 
                             type="submit" 
                             onClick={sendMessage}
-                            
                             >Send a message</button>
                  </form>
-                 
-                <MicIcon/>
+                 <MicIcon/>
             </div>
         </div>
     )

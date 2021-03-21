@@ -15,23 +15,28 @@ import { actionTypes } from './reducer'
 function Sidebar() {
     let history = useHistory()
     const [rooms, setRooms] = useState([])
-    const [searchRoom, setSearchRoom] = useState([])
+    const [searchRoom, setSearchRoom] = useState(" ")
     const [{user}, dispatch] = useStateValue()
     
     
     useEffect(()=>{
        
-        const unsubscribe = db.collection('rooms').onSnapshot(snapshot =>(
+        db.collection('rooms').onSnapshot(snapshot =>(
              setRooms(snapshot.docs.map(doc =>({
                  id: doc.id,
                  data: doc.data(),
-                 
-             })))
+                })))
          ))
-         return () =>{
-            unsubscribe()
+        }, [searchRoom])
+   
+         const ssss =() =>{
+        setRooms(rooms.filter(room => room.data.name == searchRoom))
+            
          }
-    }, [])
+//    useEffect(()=>{
+//     setRooms(rooms.filter(room => room.data.name == searchRoom))
+//     console.log(rooms)
+//    }, [searchRoom])
 
     const logOut = () =>{
         firebase.auth().signOut().then(() => {
@@ -45,9 +50,18 @@ function Sidebar() {
           });
     }
 
- 
-    return (
+   const test = (e)=>{
+       e.preventDefault()
+       console.log(searchRoom)
+       setRooms(rooms.filter(room => room.data.name == searchRoom))
+    if (e.charCode === 13){
+       
+        setRooms(rooms.filter(room => room.data.name == searchRoom))
+    }
+   }
+     return (
         <div className="sidebar">
+           
            <div className="sidebar_header">
                <Avatar src={user?.photoURL} />
                <div className="sidebar_headerRight">
@@ -70,14 +84,20 @@ function Sidebar() {
 
                
                         <SearchOutlined />
-                    <input onChange={(e) => setSearchRoom(e.target.value)} placeholder="Search or start a new chat" type="text"/>
+                        <form type="submit">
+                        <input type="submit"
+                           onChange={(e) => (setSearchRoom(e.target.value), console.log(searchRoom))}
+                            placeholder="Search or start a new chat" type="text"/>
+                            <button style={{display: "none"}} onClick={test}></button>
+                        </form>
+                   
                 </div>
            </div>
            <div className="sidebar_chats">
                <SidebarChat addNewChat searchRoom={searchRoom}/>
-              
+             {rooms.length <1 && <div><p>No Rooms Found</p></div>} 
              {rooms.map(room =>
-                 <SidebarChat key={room.id} author={room.data.authorId} id={room.id} name={room.data.name} />
+                 <SidebarChat rooms={rooms} searchRoom={searchRoom} key={room.id} author={room.data.authorId} id={room.id} name={room.data.name} />
              )}
             
                

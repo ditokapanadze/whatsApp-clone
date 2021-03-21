@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import {useStateValue} from './StateProvider'
 
 
-function SidebarChat({id, name, author, addNewChat, searchRoom}) {
+function SidebarChat({id, name, rooms, author, addNewChat, searchRoom}) {
     const [seed, setSeed] = useState('')
     const [messages, setMessages] = useState([])
     const [{user}, dispatch] = useStateValue()
@@ -53,12 +53,14 @@ function SidebarChat({id, name, author, addNewChat, searchRoom}) {
 
     
 
-     console.log(searchRoom + "  esaa")
+    
     return !addNewChat ? (
         <Link to={`/rooms/${id}`}>
+            
             <div className="sidebarChat">
             <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
             <div className="sidebarChat_info">
+                
                 <h2>{name}</h2>
                 {author === user.uid &&( <div> 
                                         <p>Created by you</p>
@@ -75,7 +77,7 @@ function SidebarChat({id, name, author, addNewChat, searchRoom}) {
         <div onClick={createChat} className="sidebarChat">
          <h2>Add new Chat</h2>
         </div>
-    )
+    ) 
 }
 
 export default SidebarChat
