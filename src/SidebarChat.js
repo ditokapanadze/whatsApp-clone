@@ -17,7 +17,12 @@ function SidebarChat({id, name, rooms, author, addNewChat, searchRoom}) {
    
     
      const createChat = () =>{
-         const roomName = prompt("please enter name for chat room")
+         let roomName = prompt("please enter name for chat room")
+         while(roomName.length < 5){
+            // roomName.length >= 5 ? roomName = prompt("Room name must be at leat 5 characters long") :  prompt("Room name must be at leat 5 characters long")
+         
+            roomName = prompt("Room name must be at least 5 characters long") 
+         }
          if(roomName){
            db.collection('rooms').add({
                name: roomName,
@@ -50,10 +55,6 @@ function SidebarChat({id, name, rooms, author, addNewChat, searchRoom}) {
         }
           
     }
-
-    
-
-    
     return !addNewChat ? (
         <Link to={`/rooms/${id}`}>
             

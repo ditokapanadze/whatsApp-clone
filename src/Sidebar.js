@@ -94,7 +94,7 @@ function Sidebar() {
                 </div>
            </div>
            <div className="sidebar_chats">
-               <SidebarChat addNewChat searchRoom={searchRoom}/>
+               <SidebarChat addNewChat />
              {rooms.length <1 && <div><p>No Rooms Found</p></div>} 
              {rooms.map(room =>
                  <SidebarChat rooms={rooms} searchRoom={searchRoom} key={room.id} author={room.data.authorId} id={room.id} name={room.data.name} />
