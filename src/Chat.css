@@ -125,6 +125,10 @@
 
 }
 
+.reply-btn{
+    position: absolute;
+    left: 220px
+}
 
 
 .test:hover  .dlt-btn{
@@ -139,4 +143,15 @@
 
 .visible{
   display: inline-block;
+}
+
+.reply{
+    
+    display: flex;
+    flex-direction: column;
+}
+
+.reply span{
+    font-style: italic;
+    background-color: #c6f8f2
 }

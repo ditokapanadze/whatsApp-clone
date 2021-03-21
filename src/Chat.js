@@ -26,7 +26,9 @@ function Chat() {
     const [url, setUrl] = useState("");
     const [imgPreview, setimgPreview] = useState ("")
     const [{user}, dispatch] = useStateValue([]) 
-
+    const [replyPost, setReplyPost] = useState("")
+    const [replySubject, setReplySubject] = useState('')
+    const [test, setTest] = useState([])
     const [chosenEmoji, setChosenEmoji] = useState(null);
 
     const onEmojiClick = (event, emojiObject) => {
@@ -79,7 +81,8 @@ function Chat() {
                     message: input,
                     name: user.displayName, 
                     photoURL: url,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    reply: replyPost ? true : false
                 })
                 })
                }
@@ -91,8 +94,9 @@ function Chat() {
         .add({
             message: input,
             name: user.displayName, 
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            reply: replyPost ? true : false
             
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
         })
       }
       
@@ -101,6 +105,7 @@ function Chat() {
         setUrl("")
         setInput("")
         setimgPreview('')
+        setReplyPost('')
       };
 
 
@@ -116,7 +121,8 @@ function Chat() {
           message: input,
           name: user.displayName, 
           photoURL: url,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          
       })
       alert(url)
     }, 3000)
@@ -178,8 +184,45 @@ function Chat() {
        }
     }
 
-  
+   const reply =(id) =>{
+     console.log(id)
+    db.collection('rooms')
+      .doc(roomId)
+      .collection('messages')
+      .onSnapshot(snapshot => {
+        setTest(snapshot.docs.map(doc =>({
+          id: doc.id,
+         data: doc.data(),
+        })))
+    })
 
+    // ({
+    //   id: doc.id,
+    //   data: doc.data(),
+    //  })
+      // .doc(id)
+      // .onSnapshot(snapshot => (
+      //  console.log(snapshot)
+      // ))
+    
+     const findPost = test.filter(message => message.id === id)
+       console.log(findPost[0]?.data.name)
+    
+      const post = findPost[0]?.data.message
+      setReplySubject(findPost[0]?.data.name)
+     setInput(`reply: ${post}:`)
+
+     setReplyPost(post)
+    // console.log(replyPost)
+
+    //   db.collection('rooms').onSnapshot(snapshot =>(
+    //     setRooms(snapshot.docs.map(doc =>({
+    //         id: doc.id,
+    //         data: doc.data(),
+    //        })))
+    // ))
+   }
+console.log(messages)
     return (
         <div  className="chat">
             <div className="chat_header">
@@ -211,8 +254,18 @@ function Chat() {
                             {message.data.name}
                         </span>
                         {message.data.name === user.displayName && <button className="dlt-btn" onClick={() => handleDelete(message.id)}>delete message</button>}
+                      {message.data.name !== user.displayName &&  <button onClick={() =>reply(message.id)} className="reply-btn">Reply</button>}
                        
-                       {message.data.message}
+                       {/* {message.data.reply ? <p> asdasd </p> : ""} */}
+                       
+                      
+
+                       {/* {message.data.reply ? <p>{message.data.message.match(/:(.*):/)[1]}</p> : " "} */}
+                       {message.data.reply ?
+                        <p className="reply"><span>{replySubject}:{message.data.message.split(':')[1]}</span> {message.data.message.split(':')[2]}</p> 
+                        :  message.data.message }
+
+                       
                        <img  className="message-img" src={message.data.photoURL}/>
                         <span className="chat_timestamp">
                             {new Date(message.data.timestamp?.toDate()).toUTCString()}

@@ -61,7 +61,6 @@ function SidebarChat({id, name, rooms, author, addNewChat, searchRoom}) {
             <div className="sidebarChat">
             <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
             <div className="sidebarChat_info">
-                
                 <h2>{name}</h2>
                 {author === user.uid &&( <div> 
                                         <p>Created by you</p>
