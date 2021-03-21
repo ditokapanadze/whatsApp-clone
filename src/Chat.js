@@ -84,17 +84,17 @@ function Chat() {
                 })
                }
                 ) }
-      // } else {
-      //   db.collection('rooms')
-      //   .doc(roomId)
-      //   .collection('messages')
-      //   .add({
-      //       message: input,
-      //       name: user.displayName, 
-      //       photoURL: url,
-      //       timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      //   })
-      // }
+       else if(input){
+        db.collection('rooms')
+        .doc(roomId)
+        .collection('messages')
+        .add({
+            message: input,
+            name: user.displayName, 
+            
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        })
+      }
       
     
       setPhoto(null)
