@@ -48,7 +48,10 @@ function Chat() {
           }
      }
 
-     const handleUpload = () => {
+     const handleUpload = (e) => {
+     e.preventDefault()
+     
+       if(photo){
         const uploadTask = firebase.storage().ref(`images/${photo.name}`).put(photo);
         uploadTask.on(
           "state_changed",
@@ -67,27 +70,57 @@ function Chat() {
               .child(photo.name)
               .getDownloadURL()
               .then(url => {
-                  setUrl(url);
-                  
-              });
-          }
-        );
-        
+                setUrl(url)
+                
+                db.collection('rooms')
+                .doc(roomId)
+                .collection('messages')
+                .add({
+                    message: input,
+                    name: user.displayName, 
+                    photoURL: url,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                })
+                })
+               }
+                ) }
+      // } else {
+      //   db.collection('rooms')
+      //   .doc(roomId)
+      //   .collection('messages')
+      //   .add({
+      //       message: input,
+      //       name: user.displayName, 
+      //       photoURL: url,
+      //       timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      //   })
+      // }
+      
+    
+      setPhoto(null)
+        setUrl("")
+        setInput("")
+        setimgPreview('')
       };
 
 
      function  sendMessage (e) {
-      e.preventDefault()
-      photo && handleUpload()
-       db.collection('rooms')
-        .doc(roomId)
-        .collection('messages')
-        .add({
-            message: input,
-            name: user.displayName, 
-            photoURL: url,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        })
+      // e.preventDefault()
+     
+      // photo && handleUpload()
+      setUrl(url)
+      setTimeout(function(){db.collection('rooms')
+      .doc(roomId)
+      .collection('messages')
+      .add({
+          message: input,
+          name: user.displayName, 
+          photoURL: url,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      alert(url)
+    }, 3000)
+     alert(url)
         setPhoto(null)
         setUrl("")
         setInput("")
@@ -114,14 +147,13 @@ function Chat() {
         }
       
     }, [roomId])
-    console.log(messages)
+    
       
      const handleDelete =(id) =>{
             console.log(id)
             db.collection('rooms').doc(roomId)
             .collection('messages').doc(id).delete()
-
-     }
+          }
 
      let objDiv = document.getElementsByClassName("chat_body");
  objDiv.scrollBottom = objDiv.scrollToBottom
@@ -216,7 +248,7 @@ function Chat() {
                                 <label for="img"><PhotoCameraIcon /></label>
                      <button 
                             type="submit" 
-                            onClick={sendMessage}
+                            onClick={handleUpload}
                             >Send a message</button>
                  </form>
                  <MicIcon/>
