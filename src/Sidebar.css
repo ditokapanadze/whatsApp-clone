@@ -8,7 +8,7 @@
 .sidebar_search{
     display: flex;
     align-items: center;
-    background-color: #f6f6ff;
+    background-color: #f6f6f6;
     height: 39px;
     padding: 10px;
 }
@@ -24,7 +24,9 @@
 
 .sidebar_searchContainer input{
     border: none;
+    outline: none;
     margin-left: 10px;
+    width: 80%;
 }
 
 .sidebar_searchContainer >.MuiSvgIcon-root{

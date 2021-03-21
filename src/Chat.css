@@ -51,6 +51,7 @@
     border-radius: 10px;
     width: fit-content;
     margin-bottom: 30px;
+    
 }
 
 .chat_name{
@@ -69,6 +70,9 @@
     background-color: #dcf8c6;
     max-width: 500px;
     word-break: break-all;
+}
+.message-img{
+    max-width: 500px;
 }
 
 .chat_footer{
@@ -92,6 +96,14 @@
     border: none;
     outline: none;
 }
+
+.img-input{
+    /* display: inline-block;
+    max-width: 100px;
+    background-color: blue; */
+    display:none
+}
+
 
 .chat_footer form button{
     display: none;

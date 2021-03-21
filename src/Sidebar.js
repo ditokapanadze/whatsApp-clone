@@ -15,10 +15,12 @@ import { actionTypes } from './reducer'
 function Sidebar() {
     let history = useHistory()
     const [rooms, setRooms] = useState([])
+    const [searchRoom, setSearchRoom] = useState([])
     const [{user}, dispatch] = useStateValue()
     
+    
     useEffect(()=>{
-
+       
         const unsubscribe = db.collection('rooms').onSnapshot(snapshot =>(
              setRooms(snapshot.docs.map(doc =>({
                  id: doc.id,
@@ -43,7 +45,7 @@ function Sidebar() {
           });
     }
 
-   console.log(rooms)
+ 
     return (
         <div className="sidebar">
            <div className="sidebar_header">
@@ -68,11 +70,11 @@ function Sidebar() {
 
                
                         <SearchOutlined />
-                    <input placeholder="Search or start a new chat" type="text"/>
+                    <input onChange={(e) => setSearchRoom(e.target.value)} placeholder="Search or start a new chat" type="text"/>
                 </div>
            </div>
            <div className="sidebar_chats">
-               <SidebarChat addNewChat/>
+               <SidebarChat addNewChat searchRoom={searchRoom}/>
               
              {rooms.map(room =>
                  <SidebarChat key={room.id} author={room.data.authorId} id={room.id} name={room.data.name} />

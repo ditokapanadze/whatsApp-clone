@@ -12,6 +12,7 @@ import userEvent from '@testing-library/user-event'
 import { useStateValue } from './StateProvider'
 import ReactDOM from 'react-dom';
 import Picker from 'emoji-picker-react';
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 
 function Chat() {
     const [seed, setSeed] = useState("")
@@ -23,7 +24,7 @@ function Chat() {
     const [photo, setPhoto] = useState(null)
     const [progress, setProgress] = useState(0);
     const [url, setUrl] = useState("");
-
+    const [imgPreview, setimgPreview] = useState ("")
     const [{user}, dispatch] = useStateValue([]) 
 
     const [chosenEmoji, setChosenEmoji] = useState(null);
@@ -41,6 +42,8 @@ function Chat() {
      const handleChange = (e) =>{
         if (e.target.files[0]) {
             setPhoto(e.target.files[0]);
+            let src = URL.createObjectURL(e.target.files[0]);
+            setimgPreview(src) 
             
           }
      }
@@ -65,16 +68,21 @@ function Chat() {
               .getDownloadURL()
               .then(url => {
                   setUrl(url);
+                  alert(url)
               });
           }
         );
+        
       };
 
 
-    const sendMessage =(e) =>{
-        e.preventDefault()
-        console.log(input)
-        if(input)
+     function  sendMessage (e) {
+      e.preventDefault()
+       
+       photo && handleUpload()
+        
+       
+       
         db.collection('rooms')
         .doc(roomId)
         .collection('messages')
@@ -85,10 +93,12 @@ function Chat() {
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         })
         
-        handleUpload()
-        
+        setPhoto(null)
+        setUrl("")
         setInput("")
-    }
+        setimgPreview('')
+        
+      }
 
     useEffect(() => {
         if(roomId){
@@ -105,8 +115,7 @@ function Chat() {
                 setMessages(snapshot.docs.map(doc =>({
                     id: doc.id,
                     data: doc.data(),
-                   
-                    })))
+                  })))
             })
         }
       
@@ -143,7 +152,7 @@ function Chat() {
        }
     }
 
-    console.log(url)
+  
 
     return (
         <div  className="chat">
@@ -178,9 +187,9 @@ function Chat() {
                             {message.data.name}
                         </span>
                         {message.data.name === user.displayName && <button className="dlt-btn" onClick={() => handleDelete(message.id)}>delete message</button>}
-                        <img  />
+                       
                        {message.data.message}
-                       <img src={message.data.photoURL}/>
+                       <img  className="message-img" src={message.data.photoURL}/>
                         <span className="chat_timestamp">
                             {new Date(message.data.timestamp?.toDate()).toUTCString()}
                         </span>
@@ -206,11 +215,16 @@ function Chat() {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Type a message" />
-                          <input 
+                          <input
+                                id="img"
+                                className="img-input" 
+                                accept="image/*"
                                 type="file"
                                 onChange={handleChange}
                                 
-                                    />
+                                    /> 
+                                  <img width="50" id="file-ip-1-preview" src={imgPreview}/>    
+                                <label for="img"><PhotoCameraIcon /></label>
                      <button 
                             type="submit" 
                             onClick={sendMessage}

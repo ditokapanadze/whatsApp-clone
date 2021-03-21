@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import {useStateValue} from './StateProvider'
 
 
-function SidebarChat({id, name, author, addNewChat}) {
+function SidebarChat({id, name, author, addNewChat, searchRoom}) {
     const [seed, setSeed] = useState('')
     const [messages, setMessages] = useState([])
     const [{user}, dispatch] = useStateValue()
@@ -51,7 +51,9 @@ function SidebarChat({id, name, author, addNewChat}) {
           
     }
 
-     console.log(messages[0]?.message)
+    
+
+     console.log(searchRoom + "  esaa")
     return !addNewChat ? (
         <Link to={`/rooms/${id}`}>
             <div className="sidebarChat">
