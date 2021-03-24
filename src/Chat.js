@@ -28,6 +28,7 @@ function Chat() {
     const [{user}, dispatch] = useStateValue([]) 
     const [replyPost, setReplyPost] = useState("")
     const [replySubject, setReplySubject] = useState('')
+    const [replyPhoto, setReplyPhoto] = useState('')
     const [test, setTest] = useState([])
     const [chosenEmoji, setChosenEmoji] = useState(null);
 
@@ -82,8 +83,10 @@ function Chat() {
                     name: user.displayName, 
                     photoURL: url,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    reply: replyPost ? true : false
-                })
+                    reply: replyPost || replyPhoto  ? true : false,
+                    replySubject : replySubject,
+                    replyPhoto : replyPhoto ? replyPhoto : ""
+                }) 
                 })
                }
                 ) }
@@ -95,12 +98,11 @@ function Chat() {
             message: input,
             name: user.displayName, 
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            reply: replyPost ? true : false
-            
-        })
+            reply: replyPost || replyPhoto  ? true : false,
+            replySubject : replySubject,
+            replyPhoto : replyPhoto ? replyPhoto : ""
+          })
       }
-      
-    
       setPhoto(null)
         setUrl("")
         setInput("")
@@ -109,29 +111,7 @@ function Chat() {
       };
 
 
-     function  sendMessage (e) {
-      // e.preventDefault()
-     
-      // photo && handleUpload()
-      setUrl(url)
-      setTimeout(function(){db.collection('rooms')
-      .doc(roomId)
-      .collection('messages')
-      .add({
-          message: input,
-          name: user.displayName, 
-          photoURL: url,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          
-      })
-      alert(url)
-    }, 3000)
-     alert(url)
-        setPhoto(null)
-        setUrl("")
-        setInput("")
-        setimgPreview('')
-      }
+  
 
     useEffect(() => {
         if(roomId){
@@ -161,7 +141,7 @@ function Chat() {
             .collection('messages').doc(id).delete()
           }
 
-     let objDiv = document.getElementsByClassName("chat_body");
+  let objDiv = document.getElementsByClassName("chat_body");
  objDiv.scrollBottom = objDiv.scrollToBottom
  
      const messagesEndRef = useRef(null)
@@ -207,11 +187,12 @@ function Chat() {
     
      const findPost = test.filter(message => message.id === id)
        console.log(findPost[0]?.data.name)
-    
+       
+       const replyPhoto = findPost[0]?.data.photoURL
       const post = findPost[0]?.data.message
       setReplySubject(findPost[0]?.data.name)
      setInput(`reply: ${post}:`)
-
+     setReplyPhoto(replyPhoto)
      setReplyPost(post)
     // console.log(replyPost)
 
@@ -253,19 +234,19 @@ console.log(messages)
                     <span className="chat_name">
                             {message.data.name}
                         </span>
+                        
                         {message.data.name === user.displayName && <button className="dlt-btn" onClick={() => handleDelete(message.id)}>delete message</button>}
-                      {message.data.name !== user.displayName &&  <button onClick={() =>reply(message.id)} className="reply-btn">Reply</button>}
-                       
-                       {/* {message.data.reply ? <p> asdasd </p> : ""} */}
-                       
-                      
-
+                        {/* {message.data.reply ? <p> asdasd </p> : ""} */}
                        {/* {message.data.reply ? <p>{message.data.message.match(/:(.*):/)[1]}</p> : " "} */}
                        {message.data.reply ?
-                        <p className="reply"><span>{replySubject}:{message.data.message.split(':')[1]}</span> {message.data.message.split(':')[2]}</p> 
-                        :  message.data.message }
-
                        
+                        <div className="reply"> <img className="message-img" src={message.data.replyPhoto} /><span>{message.data.replySubject}:{message.data.message.split(':')[1]} </span>{message.data.message.split(':')[2]}</div> 
+                        :  message.data.message }
+                           
+                       {message.data.name !== user.displayName && 
+                           <button  className="reply-btn" 
+                           onClick={() =>reply(message.id)}>Reply</button>
+                           } 
                        <img  className="message-img" src={message.data.photoURL}/>
                         <span className="chat_timestamp">
                             {new Date(message.data.timestamp?.toDate()).toUTCString()}
