@@ -1,38 +1,28 @@
-
 export const initialState = {
-    user: null,
+  user: null,
 };
-
-
 
 export const actionTypes = {
-    SET_USER : "SET_USER",
-    SET_USER : "LOG_OUT",
+  SET_USER: "SET_USER",
+  SET_USER: "LOG_OUT",
 };
 
-
-
-
 const reducer = (state, action) => {
-    console.log(action)
-    switch(action.type){
-        case actionTypes.SET_USER:
-            return {
-                ...state,
-                user: action.user
-               
-             }
-        case actionTypes.LOG_OUT:
-            return {
-                ...state,
-                user: null
-               
-             }
+  switch (action.type) {
+    case actionTypes.SET_USER:
+      return {
+        ...state,
+        user: action.user,
+      };
+    case actionTypes.LOG_OUT:
+      return {
+        ...state,
+        user: null,
+      };
 
-
-        default:
-            return state;
-    }
+    default:
+      return state;
+  }
 };
 
 export default reducer;
